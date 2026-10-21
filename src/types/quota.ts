@@ -521,3 +521,100 @@ export interface XaiQuotaState {
   error?: string;
   errorStatus?: number;
 }
+
+// Cursor quota (GET /v8/management/quota/cursor; display-only, see CLIProxyAPI
+// docs/cursor/USAGE-TRACKING.md section 5). Percentages are USED, as Cursor reports them.
+
+/** One `kind: "percent"` window, normalized from the backend entry. */
+export interface CursorPercentWindowData {
+  /** Percent used, 0-100 but neither rounded nor clamped (upstream may exceed 100). */
+  usedPercent: number;
+  remainingPercent: number;
+  resetsAt: string | null;
+  observedAt: string | null;
+}
+
+export type CursorOnDemandLimitKind = 'fixed' | 'unlimited' | 'disabled' | 'unavailable';
+
+/** The `kind: "spend"` on-demand window. Dollar amounts are US dollars. */
+export interface CursorOnDemand {
+  limitKind: CursorOnDemandLimitKind;
+  /** `team_member` or `personal` for `unlimited`, else empty. */
+  limitScope: string;
+  usedUsd: number;
+  /** Numbers only for `fixed`. */
+  limitUsd: number | null;
+  remainingUsd: number | null;
+  usedPercent: number | null;
+  resetsAt: string | null;
+  observedAt: string | null;
+}
+
+export interface CursorPlan {
+  label: string;
+  price: string;
+}
+
+export interface CursorQuotaExtra {
+  billingCycleStart: string | null;
+  includedSpendUsd: number | null;
+  includedLimitUsd: number | null;
+  bonusUsd: number | null;
+  totalSpendUsd: number | null;
+  autoBucketModels: string[];
+}
+
+/** One `credentials[]` entry of the quota endpoint. */
+export interface CursorQuotaCredential {
+  authIndex: string;
+  id: string;
+  name: string;
+  email: string;
+  disabled: boolean;
+  status: string;
+  plan: CursorPlan | null;
+  included: CursorPercentWindowData | null;
+  includedAuto: CursorPercentWindowData | null;
+  includedApi: CursorPercentWindowData | null;
+  onDemand: CursorOnDemand | null;
+  extra: CursorQuotaExtra | null;
+  lastPollAt: string | null;
+  nextPollAt: string | null;
+  pollError: string;
+}
+
+export interface CursorQuotaResponse {
+  generatedAt: string | null;
+  refreshIntervalSeconds: number | null;
+  credentials: CursorQuotaCredential[];
+}
+
+export type CursorQuotaWindowId = 'included' | 'included_auto' | 'included_api';
+
+/** A percent window as the card and the timeline read it. */
+export interface CursorQuotaWindow {
+  id: CursorQuotaWindowId;
+  label: string;
+  labelKey: string;
+  /** Percent USED, as reported (not clamped). */
+  usedPercent: number;
+  resetAtMs: number | null;
+  /** Billing-cycle length; the cycle is about 30 days, anchored to the subscription. */
+  periodHours: number | null;
+}
+
+export interface CursorQuotaState {
+  status: 'idle' | 'loading' | 'success' | 'error';
+  /** Included, then its Auto and API buckets; empty until the backend's first good poll. */
+  windows: CursorQuotaWindow[];
+  onDemand?: CursorOnDemand | null;
+  plan?: CursorPlan | null;
+  /** Billing-cycle end shared by every window, RFC 3339. */
+  resetsAt?: string | null;
+  extra?: CursorQuotaExtra | null;
+  /** Backend poll error code; non-empty means the numbers are stale or missing. */
+  pollError?: string;
+  lastPollAt?: string | null;
+  error?: string;
+  errorStatus?: number;
+}

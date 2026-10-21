@@ -29,6 +29,10 @@ export function isDevinFile(file: AuthFileItem): boolean {
   return resolveAuthProvider(file) === 'devin';
 }
 
+export function isCursorFile(file: AuthFileItem): boolean {
+  return resolveAuthProvider(file) === 'cursor';
+}
+
 export function isKimiFile(file: AuthFileItem): boolean {
   return resolveAuthProvider(file) === 'kimi';
 }
@@ -42,6 +46,7 @@ export const BUILT_IN_QUOTA_PROVIDERS: ReadonlySet<string> = new Set([
   'antigravity',
   'claude',
   'codex',
+  'cursor',
   'devin',
   'kimi',
   'meta',

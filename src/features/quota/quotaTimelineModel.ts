@@ -357,7 +357,8 @@ export function buildTimelineLane(input: TimelineLaneInput): TimelineLane {
 
   if (!quota || quota.status !== 'success') return empty;
 
-  if (provider === 'claude' || provider === 'codex') {
+  // Cursor's windows are its monthly billing cycle; every row shares one reset.
+  if (provider === 'claude' || provider === 'codex' || provider === 'cursor') {
     const windows = ((quota as { windows?: WindowLike[] }).windows ?? []).filter(
       (window) => typeof window.resetAtMs === 'number'
     );
@@ -381,6 +382,8 @@ export function buildTimelineLane(input: TimelineLaneInput): TimelineLane {
         : undefined;
     const chosen = preferredCodexWindow ?? pickLaneWindow(windows, maxPeriodHours);
     if (!chosen) return empty;
+    const remainingOf = (used: number) =>
+      provider === 'cursor' ? Math.round(clampPercent(100 - used)) : clampPercent(100 - used);
 
     const resetCredits =
       provider === 'codex'
@@ -404,14 +407,13 @@ export function buildTimelineLane(input: TimelineLaneInput): TimelineLane {
       ...empty,
       anchorMs: chosen.resetAtMs ?? null,
       periodHours: chosen.periodHours ?? null,
-      // Claude and Codex store percent USED.
-      remaining:
-        typeof chosen.usedPercent === 'number' ? clampPercent(100 - chosen.usedPercent) : null,
+      // Claude, Codex and Cursor store percent USED. Cursor's are unrounded floats.
+      remaining: typeof chosen.usedPercent === 'number' ? remainingOf(chosen.usedPercent) : null,
       limits: windows
         .filter((window) => typeof window.usedPercent === 'number')
         .map((window) => ({
           label: window.label ?? '',
-          remaining: clampPercent(100 - (window.usedPercent as number)),
+          remaining: remainingOf(window.usedPercent as number),
         })),
       resetCredits,
     };

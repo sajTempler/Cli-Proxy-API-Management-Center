@@ -3,6 +3,7 @@ import type { QuotaProviderType } from './providers/types';
 /** tab 顺序 = 旧页五分区的纵向顺序，'全部' tab 下卡片也按此分组排列。 */
 export const QUOTA_TAB_ORDER: readonly QuotaProviderType[] = [
   'claude',
+  'cursor',
   'antigravity',
   'codex',
   'xai',

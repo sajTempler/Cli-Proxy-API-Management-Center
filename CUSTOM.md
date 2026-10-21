@@ -92,52 +92,18 @@ provider's `filterFn`, and each provider found becomes a tab.
   seven_day_fable: { used_percent, remaining_percent, resets_at, status, observed_at, source } },
   last_poll_at, next_poll_at, poll_error }`. That endpoint, not api-call, is the model for Cursor.
 
-### Minimum change set for a `cursor` tab
+### How the Cursor tab works
 
-The data comes from `GET /v8/management/quota/cursor`, which the backend task will define. A
-proposed shape, following `/quota/claude` (snake_case, RFC 3339 UTC, percentages 0–100):
-
-```json
-{
-  "provider": "cursor",
-  "generated_at": "2026-10-21T10:00:00Z",
-  "accounts": [{
-    "id": "acct-1", "email": "me@example.com", "plan": "pro",
-    "resets_at": "2026-11-05T00:00:00Z",
-    "included": { "used_percent": 42.0, "auto": { "used_percent": 30.0 }, "api": { "used_percent": 12.0 } },
-    "on_demand": { "enabled": true, "spent_cents": 1234, "limit_cents": 5000 },
-    "observed_at": "2026-10-21T09:59:00Z", "error": ""
-  }]
-}
-```
-
-1. `src/services/api/cursorQuota.ts`: `getCursorQuota()` using `apiClient.get('/quota/cursor')`,
-   normalizing snake_case to camelCase and narrowing `unknown` (same pattern as `claudeUsage.ts`).
-   Export it from `src/services/api/index.ts`.
-2. `src/types/quota.ts`: `CursorQuotaState { status, windows[] (included, auto, api; periodHours
-   = 24 * 30, resetAtMs from resets_at), onDemand { enabled, spentCents, limitCents } | null,
-   plan, observedAt, error?, errorStatus? }`.
-3. `src/features/quota/providers/types.ts`: add `'cursor'` to `QuotaProviderType`; add
-   `cursorQuota` and `setCursorQuota` to `QuotaStore`. Implement both, plus the clear and
-   omit paths, in `src/stores/useQuotaStore.ts`.
-4. `src/features/quota/providers/cursor/data.ts`: `CURSOR_CONFIG: QuotaProviderData`. Its
-   `filterFn` matches `type === 'cursor'`, and `fetchQuota` picks the matching account from the
-   endpoint response. Add `cursor/CursorQuotaBody.tsx` with a `QuotaMeter` for Included %, Auto
-   and API sub-rows, an On-Demand `$spent / $limit` row, and a `QuotaResetLabel`.
-5. Register it in `providers/index.ts` (`QUOTA_ADAPTERS`), `logic.ts` (`QUOTA_FILTER_MAP`),
-   `constants.ts` (`QUOTA_TAB_ORDER`), and `QuotaPage.tsx` (`quotaByType` and its dependencies).
-6. Entry source: Cursor accounts are not proxy credentials, so `/credentials` never returns them
-   and `classifyQuotaFiles` would produce an empty tab. In `QuotaPage.loadFiles`, after
-   `authFilesApi.list()`, append synthetic `AuthFileItem`s
-   (`{ name: 'cursor:<id>', type: 'cursor', provider: 'cursor', email }`) built from
-   `/quota/cursor`. Do this only on success, and keep the existing stale-request guard.
-   `fetchQuota` should reuse the response cached for that load rather than refetching per card.
-7. Timeline: add `'cursor'` to the `provider === 'claude' || provider === 'codex'` windows branch
-   in `quotaTimelineModel.ts` and to the matching branch in `resetSchedule.ts`. Both read
-   `windows[].resetAtMs` and `periodHours`.
-8. Label and icon: `auth_files.filter_cursor` in all six locales, `src/assets/icons/cursor.svg`,
-   and an `AUTH_FILE_ICONS.cursor` entry.
-9. i18n: `cursor_quota.{title, empty_title, empty_desc, idle, loading, load_failed, included,
-   auto, api, on_demand, on_demand_disabled, reset}` in all six locale files.
-10. Tests: `tests/cursorQuota.test.ts` for the normalizer and `CURSOR_CONFIG` state builders
-    (follow `tests/kimiMonthlyQuota.test.ts`), then `bun run verify`.
+- Contract: `/Users/szymon/private/CLIProxyAPI` branch `feat/cursor-usage`,
+  `docs/cursor/USAGE-TRACKING.md` section 5. `GET /v8/management/quota/cursor` is the poller
+  snapshot; `POST /v8/management/quota/cursor/refresh {auth_index}` polls Cursor now.
+- Cards: one per `type: "cursor"` credential from `/credentials` (every cursor auth file also
+  appears in the quota response, so no synthetic entries). Matched by `auth_index`, then name.
+- Fetch (`src/features/quota/providers/cursor/data.ts`): a card refresh POSTs `refresh` for its
+  `auth_index`; on 404/429/503 it falls back to the shared GET snapshot. A missing endpoint ends
+  as a 404 error, which the card shows as "update CPA".
+- Normalizer: `src/services/api/cursorQuota.ts`. Body: `cursor/CursorQuotaBody.tsx` (bars fill
+  with the share USED, as Cursor shows them). Display rules (percent rounding, `$` decimals,
+  `Resets MMM d` in UTC) live in `data.ts` and are tested in `tests/cursorQuota.test.ts`.
+- Timeline: `windows[]` (Included, Auto, API) carry `resetAtMs` and `periodHours` = billing cycle
+  length, so the lane is the monthly cycle bar.
