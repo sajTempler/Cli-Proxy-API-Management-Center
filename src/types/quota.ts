@@ -618,3 +618,32 @@ export interface CursorQuotaState {
   error?: string;
   errorStatus?: number;
 }
+
+/**
+ * One account's share of a provider summary (`summary.segments[]`), joined with
+ * its credential entry so the UI can name it.
+ */
+export interface QuotaSummarySegment {
+  authIndex: string;
+  /** Remaining percent of that account's pool, as reported (0-100, not rounded). */
+  remainingPercent: number;
+  name: string;
+  email: string;
+}
+
+/**
+ * `summary` of `GET /v8/management/quota/claude` (weekly window) or
+ * `/quota/cursor` (included window): sums cover loaded accounts only.
+ */
+export interface QuotaSummary {
+  credentials: number;
+  loaded: number;
+  /** Window the sums cover: `seven_day` / `seven_day_fable` (Claude), `included` (Cursor). */
+  window: string;
+  remainingPercentSum: number;
+  capacityPercent: number;
+  segments: QuotaSummarySegment[];
+  nextResetAt: string | null;
+  /** Cursor only: on-demand spend summed over loaded accounts; null for Claude. */
+  onDemandUsedUsdSum: number | null;
+}

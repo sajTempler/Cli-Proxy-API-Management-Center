@@ -1614,6 +1614,28 @@
       }
     }
   },
+  "quota_summary": {
+    "title_remaining": "Остаток за неделю · {{window}}",
+    "title_used": "{{window}}: использование",
+    "of_capacity_remaining_one": "из {{capacity}}% на {{count}} аккаунт",
+    "of_capacity_remaining_few": "из {{capacity}}% на {{count}} аккаунта",
+    "of_capacity_remaining_many": "из {{capacity}}% на {{count}} аккаунтов",
+    "of_capacity_remaining_other": "из {{capacity}}% на {{count}} аккаунта",
+    "of_capacity_used_one": "использовано из {{capacity}}% на {{count}} аккаунт",
+    "of_capacity_used_few": "использовано из {{capacity}}% на {{count}} аккаунта",
+    "of_capacity_used_many": "использовано из {{capacity}}% на {{count}} аккаунтов",
+    "of_capacity_used_other": "использовано из {{capacity}}% на {{count}} аккаунта",
+    "segment_remaining": "{{name}}: осталось {{percent}}%",
+    "segment_used": "{{name}}: использовано {{percent}}%",
+    "on_demand": "Расходы по запросу",
+    "next_reset": "Следующий сброс",
+    "no_reset": "Сброс не ожидается",
+    "not_polled": "Использование ещё не опрошено",
+    "not_loaded_one": "{{count}} аккаунт ещё не опрошен",
+    "not_loaded_few": "{{count}} аккаунта ещё не опрошены",
+    "not_loaded_many": "{{count}} аккаунтов ещё не опрошены",
+    "not_loaded_other": "{{count}} аккаунта ещё не опрошены"
+  },
   "quota_management": {
     "search_label": "Поиск аккаунтов",
     "search_placeholder": "Поиск по имени файла или электронной почте",

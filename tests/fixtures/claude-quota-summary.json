@@ -1,0 +1,29 @@
+{
+  "provider": "claude",
+  "generated_at": "2026-10-21T13:00:00Z",
+  "strategy": "soonest-reset",
+  "refresh_interval_seconds": 600,
+  "summary": {
+    "credentials": 6,
+    "loaded": 5,
+    "weekly_window": "seven_day",
+    "weekly_remaining_percent_sum": 409,
+    "weekly_capacity_percent": 500,
+    "segments": [
+      { "auth_index": "a1", "remaining_percent": 100 },
+      { "auth_index": "a2", "remaining_percent": 95 },
+      { "auth_index": "a3", "remaining_percent": 88 },
+      { "auth_index": "a4", "remaining_percent": 70 },
+      { "auth_index": "a5", "remaining_percent": 56 }
+    ],
+    "next_reset_at": "2026-10-22T04:00:00Z"
+  },
+  "credentials": [
+    { "auth_index": "a1", "name": "claude-a1.json", "email": "one@example.com" },
+    { "auth_index": "a2", "name": "claude-a2.json", "email": "two@example.com" },
+    { "auth_index": "a3", "name": "claude-a3.json", "email": "" },
+    { "auth_index": "a4", "name": "claude-a4.json", "email": "four@example.com" },
+    { "auth_index": "a5", "name": "claude-a5.json", "email": "five@example.com" },
+    { "auth_index": "a6", "name": "claude-a6.json", "email": "six@example.com" }
+  ]
+}

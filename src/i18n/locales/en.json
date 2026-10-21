@@ -1611,6 +1611,22 @@
       }
     }
   },
+  "quota_summary": {
+    "title_remaining": "Weekly remaining · {{window}}",
+    "title_used": "{{window}} usage",
+    "of_capacity_remaining_one": "of {{capacity}}% across {{count}} account",
+    "of_capacity_remaining_other": "of {{capacity}}% across {{count}} accounts",
+    "of_capacity_used_one": "used of {{capacity}}% across {{count}} account",
+    "of_capacity_used_other": "used of {{capacity}}% across {{count}} accounts",
+    "segment_remaining": "{{name}}: {{percent}}% remaining",
+    "segment_used": "{{name}}: {{percent}}% used",
+    "on_demand": "On-demand spend",
+    "next_reset": "Next reset",
+    "no_reset": "No reset pending",
+    "not_polled": "No usage polled yet",
+    "not_loaded_one": "{{count}} account not polled yet",
+    "not_loaded_other": "{{count}} accounts not polled yet"
+  },
   "quota_management": {
     "search_label": "Search accounts",
     "search_placeholder": "Search by filename or email",

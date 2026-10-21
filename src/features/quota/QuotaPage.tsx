@@ -26,6 +26,7 @@ import { ProviderTabs } from '@/features/authFiles/components/ProviderTabs';
 import { QuotaHeader } from './components/QuotaHeader';
 import { QuotaCard } from './components/QuotaCard';
 import { QuotaTimeline } from './components/QuotaTimeline';
+import { QuotaSummaryCard } from './components/QuotaSummaryCard';
 import {
   CARD_ENTRANCE_BUDGET_MS,
   QUOTA_PAGE_SIZE,
@@ -50,6 +51,8 @@ import type { QuotaProviderType } from './providers/types';
 import { useDevinQuotaAutoLoad } from './providers/devin/useDevinQuotaAutoLoad';
 import { useQuotaActions } from './hooks/useQuotaActions';
 import { useQuotaBatchLoader } from './hooks/useQuotaBatchLoader';
+import { useQuotaSummary } from './hooks/useQuotaSummary';
+import { isQuotaSummaryProvider, type QuotaSummarySegmentView } from './summary';
 import { readQuotaUiState, writeQuotaUiState } from './uiState';
 import styles from './QuotaPage.module.scss';
 
@@ -61,6 +64,9 @@ const SKELETON_CARD_COUNT = 6;
  * identity-aware display label. Keep the filename fallback stable for memoization.
  */
 const displayNameFor = (name: string) => name;
+
+const summaryAccountLabel = (segment: QuotaSummarySegmentView) =>
+  segment.email || segment.name || segment.authIndex;
 
 export function QuotaPage() {
   const { t } = useTranslation();
@@ -251,6 +257,30 @@ export function QuotaPage() {
     });
   }, [entries, error, filesGeneration, loading, sessionGeneration]);
 
+  /* ---------- Provider summary (Claude / Cursor tabs) ----------
+   * Refetched when the tab opens and whenever a card of that provider changes
+   * state, so a card refresh is reflected in the sums. */
+
+  const summaryProvider =
+    isQuotaSummaryProvider(tab) && (tabCounts[tab] ?? 0) > 0 ? tab : null;
+  const summaryQuota = summaryProvider ? quotaByType[summaryProvider] : null;
+  const summaryReloadKey = useMemo(
+    () =>
+      summaryQuota
+        ? Object.entries(summaryQuota)
+            .map(([key, state]) => `${key}:${state.status}`)
+            .sort()
+            .join('|')
+        : '',
+    [summaryQuota]
+  );
+  const { summary, loading: summaryLoading } = useQuotaSummary(
+    summaryProvider,
+    !disableControls && filesGeneration === sessionGeneration,
+    `${summaryReloadKey}#${files.length}`
+  );
+  const summaryNow = useNow(summaryProvider !== null);
+
   /* ---------- 加载与操作 ---------- */
 
   const { batchLoading, loadQuota } = useQuotaBatchLoader();
@@ -348,6 +378,16 @@ export function QuotaPage() {
             onChange={handleTabChange}
           />
         </div>
+
+        {summaryProvider && (
+          <QuotaSummaryCard
+            provider={summaryProvider}
+            summary={summary}
+            loading={summaryLoading}
+            now={summaryNow}
+            accountLabel={summaryAccountLabel}
+          />
+        )}
 
         <div className={styles.toolbar}>
           <div className={styles.search}>

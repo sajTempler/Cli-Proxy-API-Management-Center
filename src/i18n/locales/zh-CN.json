@@ -1610,6 +1610,22 @@
       }
     }
   },
+  "quota_summary": {
+    "of_capacity_remaining_one": "/ {{capacity}}%，共 {{count}} 个账号",
+    "of_capacity_used_one": "已用 / {{capacity}}%，共 {{count}} 个账号",
+    "not_loaded_one": "{{count}} 个账号尚未轮询",
+    "title_remaining": "本周剩余 · {{window}}",
+    "title_used": "{{window}} 用量",
+    "of_capacity_remaining_other": "/ {{capacity}}%，共 {{count}} 个账号",
+    "of_capacity_used_other": "已用 / {{capacity}}%，共 {{count}} 个账号",
+    "segment_remaining": "{{name}}：剩余 {{percent}}%",
+    "segment_used": "{{name}}：已用 {{percent}}%",
+    "on_demand": "按需消费",
+    "next_reset": "下次重置",
+    "no_reset": "暂无待重置",
+    "not_polled": "尚未轮询到用量",
+    "not_loaded_other": "{{count}} 个账号尚未轮询"
+  },
   "quota_management": {
     "search_label": "搜索账号",
     "search_placeholder": "按文件名或邮箱搜索",

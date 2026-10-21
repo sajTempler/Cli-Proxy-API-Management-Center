@@ -1611,6 +1611,22 @@
       }
     }
   },
+  "quota_summary": {
+    "of_capacity_remaining_one": "/ {{capacity}}% · 계정 {{count}}개",
+    "of_capacity_used_one": "사용 / {{capacity}}% · 계정 {{count}}개",
+    "not_loaded_one": "계정 {{count}}개 아직 조회 전",
+    "title_remaining": "주간 잔여 · {{window}}",
+    "title_used": "{{window}} 사용량",
+    "of_capacity_remaining_other": "/ {{capacity}}% · 계정 {{count}}개",
+    "of_capacity_used_other": "사용 / {{capacity}}% · 계정 {{count}}개",
+    "segment_remaining": "{{name}}: {{percent}}% 남음",
+    "segment_used": "{{name}}: {{percent}}% 사용",
+    "on_demand": "온디맨드 지출",
+    "next_reset": "다음 초기화",
+    "no_reset": "대기 중인 초기화 없음",
+    "not_polled": "아직 사용량을 조회하지 않음",
+    "not_loaded_other": "계정 {{count}}개 아직 조회 전"
+  },
   "quota_management": {
     "search_label": "계정 검색",
     "search_placeholder": "파일명 또는 이메일로 검색",

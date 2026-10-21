@@ -1638,6 +1638,22 @@
       }
     }
   },
+  "quota_summary": {
+    "of_capacity_remaining_one": "/ {{capacity}}%，共 {{count}} 個帳號",
+    "of_capacity_used_one": "已用 / {{capacity}}%，共 {{count}} 個帳號",
+    "not_loaded_one": "{{count}} 個帳號尚未輪詢",
+    "title_remaining": "本週剩餘 · {{window}}",
+    "title_used": "{{window}} 用量",
+    "of_capacity_remaining_other": "/ {{capacity}}%，共 {{count}} 個帳號",
+    "of_capacity_used_other": "已用 / {{capacity}}%，共 {{count}} 個帳號",
+    "segment_remaining": "{{name}}：剩餘 {{percent}}%",
+    "segment_used": "{{name}}：已用 {{percent}}%",
+    "on_demand": "按需消費",
+    "next_reset": "下次重置",
+    "no_reset": "暫無待重置",
+    "not_polled": "尚未輪詢到用量",
+    "not_loaded_other": "{{count}} 個帳號尚未輪詢"
+  },
   "quota_management": {
     "search_label": "搜尋帳號",
     "search_placeholder": "依檔案名稱或電子郵件搜尋",
