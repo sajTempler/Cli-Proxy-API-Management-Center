@@ -15,10 +15,22 @@ Shared repository guidance stays in `AGENTS.md`; this file only covers fork-spec
 ```bash
 scripts/deploy-local.sh             # bun install --frozen-lockfile, bun run build, install
 SKIP_BUILD=1 scripts/deploy-local.sh   # install the existing dist/index.html only
+ROLLBACK=1 scripts/deploy-local.sh     # put the previous install back
 ```
 
 The script copies `dist/index.html` to
 `/Users/szymon/private/CLIProxyAPI/static/custom/management.html` (override with `PANEL_TARGET`).
+Each install is checked and rolled back on failure:
+
+1. The page being served is first copied to `management.html.prev` beside the target, unless it
+   already is this build (so a redeploy keeps the older rollback copy).
+2. The new file replaces the target atomically (copy to a temp file, then `mv`).
+3. The target's sha256 and the body of `GET http://127.0.0.1:8317/management.html` (override with
+   `PANEL_URL`) must both equal `dist/index.html`'s, with status 200.
+4. If any check fails, `management.html.prev` is restored, rechecked, and the script exits 1.
+   `ROLLBACK=1` restores it on demand.
+
+The proxy must be running for the check; with it down, the install is rolled back.
 It uses the bun version pinned in `package.json`, through `mise exec` when the bun shim has no
 default version. The proxy reads the file from disk on each request, so no proxy restart is needed.
 
@@ -32,7 +44,7 @@ Proxy-side wiring (already in place, outside this repo):
 - Proxy restarts go through `/Users/szymon/private/CLIProxyAPI/.worktrees/deploy/scripts/deploy-local.sh`
   only. They are needed for `.env` changes, not for panel updates.
 
-To check what is being served:
+To check by hand what is being served:
 `curl -s http://127.0.0.1:8317/management.html | shasum -a 256` should match `dist/index.html`.
 
 ## Pulling upstream
