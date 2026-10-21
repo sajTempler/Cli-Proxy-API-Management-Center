@@ -9,6 +9,7 @@ Shared repository guidance stays in `AGENTS.md`; this file only covers fork-spec
   Local changes started from the `v1.26.6` release tag, the release whose `management.html`
   asset (sha256 `46aedbbc…2e63`) the proxy was serving before the switch.
 - `upstream` remote = router-for-me; merge its release tags into `main`.
+  Last merged release: `v1.26.7` (2026-10-21).
 
 ## Build and deploy
 
