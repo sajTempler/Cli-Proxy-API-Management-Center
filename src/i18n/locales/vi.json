@@ -1584,6 +1584,7 @@
     "not_loaded_other": "{{count}} tài khoản chưa được thăm dò"
   },
   "quota_management": {
+    "show_emails": "Hiện email",
     "title": "Quản lý Quota",
     "description": "Theo dõi trạng thái quota OAuth của credential Antigravity, Codex, Claude, Kimi và xAI.",
     "refresh_all_credentials": "Làm mới mọi credential",

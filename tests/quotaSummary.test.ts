@@ -207,9 +207,9 @@ describe('QuotaSummaryCard', () => {
 
   test('no summary yet: a skeleton while loading, nothing otherwise', () => {
     const props = { provider: 'claude' as const, summary: null, now: NOW, accountLabel: label };
-    expect(renderToStaticMarkup(createElement(QuotaSummaryCard, { ...props, loading: false }))).toBe(
-      ''
-    );
+    expect(
+      renderToStaticMarkup(createElement(QuotaSummaryCard, { ...props, loading: false }))
+    ).toBe('');
     expect(
       renderToStaticMarkup(createElement(QuotaSummaryCard, { ...props, loading: true }))
     ).not.toBe('');

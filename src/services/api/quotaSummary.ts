@@ -51,7 +51,8 @@ export function normalizeQuotaSummary(
     root.credentials.forEach((entry) => {
       const record = asRecord(entry);
       const authIndex = normalizeAuthIndex(record.auth_index);
-      if (authIndex) identities.set(authIndex, { name: text(record.name), email: text(record.email) });
+      if (authIndex)
+        identities.set(authIndex, { name: text(record.name), email: text(record.email) });
     });
   }
 
@@ -81,8 +82,7 @@ export function normalizeQuotaSummary(
     capacityPercent: finiteNumber(summary[keys.capacity]) ?? 0,
     segments,
     nextResetAt: nullableText(summary.next_reset_at),
-    onDemandUsedUsdSum:
-      provider === 'cursor' ? finiteNumber(summary.on_demand_used_usd_sum) : null,
+    onDemandUsedUsdSum: provider === 'cursor' ? finiteNumber(summary.on_demand_used_usd_sum) : null,
   };
 }
 

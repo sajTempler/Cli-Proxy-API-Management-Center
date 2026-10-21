@@ -1655,6 +1655,7 @@
     "not_loaded_other": "{{count}} 個帳號尚未輪詢"
   },
   "quota_management": {
+    "show_emails": "顯示電子郵件",
     "search_label": "搜尋帳號",
     "search_placeholder": "依檔案名稱或電子郵件搜尋",
     "search_empty_title": "沒有符合的帳號",

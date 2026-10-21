@@ -53,25 +53,25 @@ import { useQuotaActions } from './hooks/useQuotaActions';
 import { useQuotaBatchLoader } from './hooks/useQuotaBatchLoader';
 import { useQuotaSummary } from './hooks/useQuotaSummary';
 import { isQuotaSummaryProvider, type QuotaSummarySegmentView } from './summary';
+import { useShowEmails } from './privacy';
 import { readQuotaUiState, writeQuotaUiState } from './uiState';
 import styles from './QuotaPage.module.scss';
 
 const TAB_IDS: string[] = ['all', ...QUOTA_TAB_ORDER];
 const SKELETON_CARD_COUNT = 6;
 
-/**
- * Existing providers display filenames; Devin's card and timeline share an
- * identity-aware display label. Keep the filename fallback stable for memoization.
- */
-const displayNameFor = (name: string) => name;
-
-const summaryAccountLabel = (segment: QuotaSummarySegmentView) =>
-  segment.email || segment.name || segment.authIndex;
-
 export function QuotaPage() {
   const { t } = useTranslation();
   const connectionStatus = useAuthStore((state) => state.connectionStatus);
   const resolvedTheme: ResolvedTheme = useThemeStore((state) => state.resolvedTheme);
+  // Emails are masked on cards, timeline and summary unless shown; search still
+  // matches the full values (filterEntriesBySearch reads the raw file fields).
+  const [showEmails, setShowEmails, formatName] = useShowEmails();
+  const summaryAccountLabel = useCallback(
+    (segment: QuotaSummarySegmentView) =>
+      formatName(segment.email || segment.name || segment.authIndex),
+    [formatName]
+  );
 
   const [files, setFiles] = useState<AuthFileItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -261,8 +261,7 @@ export function QuotaPage() {
    * Refetched when the tab opens and whenever a card of that provider changes
    * state, so a card refresh is reflected in the sums. */
 
-  const summaryProvider =
-    isQuotaSummaryProvider(tab) && (tabCounts[tab] ?? 0) > 0 ? tab : null;
+  const summaryProvider = isQuotaSummaryProvider(tab) && (tabCounts[tab] ?? 0) > 0 ? tab : null;
   const summaryQuota = summaryProvider ? quotaByType[summaryProvider] : null;
   const summaryReloadKey = useMemo(
     () =>
@@ -365,6 +364,8 @@ export function QuotaPage() {
         refreshing={loading || batchLoading}
         disableControls={disableControls}
         onRefreshAll={handleRefreshAll}
+        showEmails={showEmails}
+        onShowEmailsChange={setShowEmails}
       />
 
       <section className={styles.workbench}>
@@ -480,6 +481,7 @@ export function QuotaPage() {
                 entranceDelayMs={cardEntranceDelay(index)}
                 onRefresh={() => void refreshQuota(entry.file, QUOTA_ADAPTERS[entry.type])}
                 onReset={() => resetQuota(entry.file, QUOTA_ADAPTERS[entry.type])}
+                formatName={formatName}
               />
             ))}
           </div>
@@ -517,7 +519,7 @@ export function QuotaPage() {
         <QuotaTimeline
           entries={pageItems}
           quotaFor={getQuota}
-          displayNameFor={displayNameFor}
+          displayNameFor={formatName}
           resolvedTheme={resolvedTheme}
         />
       </section>

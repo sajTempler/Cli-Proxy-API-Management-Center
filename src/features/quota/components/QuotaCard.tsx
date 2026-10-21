@@ -37,7 +37,11 @@ export type QuotaCardProps = {
   entranceDelayMs?: number | null;
   onRefresh: () => void;
   onReset: () => void;
+  /** Display formatter for the account name (masks emails unless shown). */
+  formatName?: (name: string) => string;
 };
+
+const keepName = (name: string) => name;
 
 export function QuotaCard(props: QuotaCardProps) {
   const {
@@ -49,13 +53,14 @@ export function QuotaCard(props: QuotaCardProps) {
     entranceDelayMs,
     onRefresh,
     onReset,
+    formatName = keepName,
   } = props;
   const { t } = useTranslation();
   const adapter = QUOTA_ADAPTERS[entry.type];
   const file = entry.file;
   const retainedClaudeUsage =
     entry.type === 'claude' && hasClaudeUsageData(quota as ClaudeQuotaState | undefined);
-  const displayName = getQuotaDisplayName(file);
+  const displayName = formatName(getQuotaDisplayName(file));
 
   // Capture the entrance delay only at mount, without a render-time ref read.
   const [mountEntranceDelayMs] = useState<number | null>(entranceDelayMs ?? null);

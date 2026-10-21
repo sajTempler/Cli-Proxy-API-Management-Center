@@ -1637,6 +1637,7 @@
     "not_loaded_other": "{{count}} аккаунта ещё не опрошены"
   },
   "quota_management": {
+    "show_emails": "Показать email",
     "search_label": "Поиск аккаунтов",
     "search_placeholder": "Поиск по имени файла или электронной почте",
     "search_empty_title": "Аккаунты не найдены",

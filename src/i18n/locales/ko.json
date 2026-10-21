@@ -1628,6 +1628,7 @@
     "not_loaded_other": "계정 {{count}}개 아직 조회 전"
   },
   "quota_management": {
+    "show_emails": "이메일 표시",
     "search_label": "계정 검색",
     "search_placeholder": "파일명 또는 이메일로 검색",
     "search_empty_title": "일치하는 계정 없음",

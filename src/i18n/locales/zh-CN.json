@@ -1627,6 +1627,7 @@
     "not_loaded_other": "{{count}} 个账号尚未轮询"
   },
   "quota_management": {
+    "show_emails": "显示邮箱",
     "search_label": "搜索账号",
     "search_placeholder": "按文件名或邮箱搜索",
     "search_empty_title": "没有匹配的账号",

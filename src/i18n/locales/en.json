@@ -1628,6 +1628,7 @@
     "not_loaded_other": "{{count}} accounts not polled yet"
   },
   "quota_management": {
+    "show_emails": "Show emails",
     "search_label": "Search accounts",
     "search_placeholder": "Search by filename or email",
     "search_empty_title": "No matching accounts",
