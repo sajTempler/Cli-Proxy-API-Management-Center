@@ -844,6 +844,16 @@
     "upgrade_required_desc": "The current server does not support the OAuth model aliases API. Please upgrade to the latest CLI Proxy API (CPA) version."
   },
   "auth_login": {
+    "cursor_oauth_title": "Cursor OAuth",
+    "cursor_oauth_button": "Log in with Cursor",
+    "cursor_oauth_hint": "Open the login link and sign in to Cursor in your browser. The proxy waits for the login and saves the authentication file automatically. Signing in with an account that already has a file replaces that file.",
+    "cursor_open_link": "Open Link",
+    "cursor_copy_link": "Copy Link",
+    "cursor_oauth_status_waiting": "Waiting for authentication...",
+    "cursor_oauth_status_success": "Authentication successful!",
+    "cursor_oauth_status_error": "Authentication failed:",
+    "cursor_oauth_start_error": "Failed to start Cursor OAuth:",
+    "cursor_oauth_polling_error": "Failed to check authentication status:",
     "devin_oauth_cancel": "Cancel Devin Login",
     "devin_oauth_cancelled": "Devin login cancelled.",
     "devin_oauth_cancel_error": "Failed to cancel Devin login:",

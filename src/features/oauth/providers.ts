@@ -16,6 +16,8 @@ import iconGrok from '@/assets/icons/grok.svg';
 import iconGrokDark from '@/assets/icons/grok-dark.svg';
 import iconDevin from '@/assets/icons/devin.svg';
 import iconDevinDark from '@/assets/icons/devin-dark.svg';
+import iconCursor from '@/assets/icons/cursor.svg';
+import iconCursorDark from '@/assets/icons/cursor-dark.svg';
 
 export type ThemedIcon = string | { light: string; dark: string };
 
@@ -125,6 +127,16 @@ export const OAUTH_PROVIDERS: BuiltInOAuthProviderCard[] = [
     label: 'Devin',
     titleKey: 'auth_login.devin_oauth_title',
     icon: { light: iconDevin, dark: iconDevinDark },
+    flow: 'browser',
+  },
+  {
+    // Backend v8 `provider=cursor`: returns the Cursor login URL and polls Cursor
+    // itself (like Meta), so the panel only follows /oauth/status; no callback.
+    kind: 'builtin',
+    id: 'cursor',
+    label: 'Cursor',
+    titleKey: 'auth_login.cursor_oauth_title',
+    icon: { light: iconCursor, dark: iconCursorDark },
     flow: 'browser',
   },
 ];

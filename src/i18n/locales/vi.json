@@ -800,6 +800,16 @@
     "remove_mapping": "Xóa ánh xạ bí danh {{number}}"
   },
   "auth_login": {
+    "cursor_oauth_title": "Cursor OAuth",
+    "cursor_oauth_button": "Đăng nhập bằng Cursor",
+    "cursor_oauth_hint": "Mở liên kết đăng nhập và đăng nhập Cursor trong trình duyệt. Proxy sẽ chờ đăng nhập và tự động lưu tệp xác thực. Đăng nhập bằng tài khoản đã có tệp sẽ thay thế tệp đó.",
+    "cursor_open_link": "Mở liên kết",
+    "cursor_copy_link": "Sao chép liên kết",
+    "cursor_oauth_status_waiting": "Đang chờ xác thực...",
+    "cursor_oauth_status_success": "Xác thực thành công!",
+    "cursor_oauth_status_error": "Xác thực thất bại:",
+    "cursor_oauth_start_error": "Không thể bắt đầu Cursor OAuth:",
+    "cursor_oauth_polling_error": "Không thể kiểm tra trạng thái xác thực:",
     "recommended_provider_section": "Provider đề xuất",
     "recommended_provider_badge": "Provider đề xuất",
     "other_oauth_providers": "Provider OAuth khác",

@@ -843,6 +843,16 @@
     "upgrade_required_desc": "当前服务器版本不支持 OAuth 模型别名功能，请升级到最新版本的 CPA（CLI Proxy API）后重试。"
   },
   "auth_login": {
+    "cursor_oauth_title": "Cursor OAuth",
+    "cursor_oauth_button": "使用 Cursor 登录",
+    "cursor_oauth_hint": "打开登录链接并在浏览器中登录 Cursor。代理会等待登录完成并自动保存认证文件。若该账号已有认证文件，登录后会替换该文件。",
+    "cursor_open_link": "打开链接",
+    "cursor_copy_link": "复制链接",
+    "cursor_oauth_status_waiting": "等待认证中...",
+    "cursor_oauth_status_success": "认证成功！",
+    "cursor_oauth_status_error": "认证失败：",
+    "cursor_oauth_start_error": "启动 Cursor OAuth 失败：",
+    "cursor_oauth_polling_error": "检查认证状态失败：",
     "devin_oauth_cancel": "取消 Devin 登录",
     "devin_oauth_cancelled": "已取消 Devin 登录。",
     "devin_oauth_cancel_error": "取消 Devin 登录失败：",

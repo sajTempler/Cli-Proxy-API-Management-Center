@@ -844,6 +844,16 @@
     "upgrade_required_desc": "현재 서버는 OAuth 모델 별칭 API를 지원하지 않습니다. 최신 버전의 CLI Proxy API(CPA)로 업그레이드하세요."
   },
   "auth_login": {
+    "cursor_oauth_title": "Cursor OAuth",
+    "cursor_oauth_button": "Cursor로 로그인",
+    "cursor_oauth_hint": "로그인 링크를 열고 브라우저에서 Cursor에 로그인하세요. 프록시가 로그인을 기다린 후 인증 파일을 자동으로 저장합니다. 이미 파일이 있는 계정으로 로그인하면 그 파일이 교체됩니다.",
+    "cursor_open_link": "링크 열기",
+    "cursor_copy_link": "링크 복사",
+    "cursor_oauth_status_waiting": "인증 대기 중...",
+    "cursor_oauth_status_success": "인증 성공!",
+    "cursor_oauth_status_error": "인증 실패:",
+    "cursor_oauth_start_error": "Cursor OAuth 시작 실패:",
+    "cursor_oauth_polling_error": "인증 상태 확인 실패:",
     "devin_oauth_cancel": "Devin 로그인 취소",
     "devin_oauth_cancelled": "Devin 로그인이 취소되었습니다.",
     "devin_oauth_cancel_error": "Devin 로그인 취소 실패:",
