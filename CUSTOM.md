@@ -5,9 +5,10 @@ Shared repository guidance stays in `AGENTS.md`; this file only covers fork-spec
 
 ## Branch model
 
-- `main` tracks `upstream/main` (router-for-me) and carries no local commits. Never commit to it.
-- `custom` holds every local change. It was cut from the `v1.26.6` release tag, the release whose
-  `management.html` asset (sha256 `46aedbbc…2e63`) the proxy was serving before the switch.
+- `main` (the fork's default branch) holds every local change on top of upstream releases.
+  Local changes started from the `v1.26.6` release tag, the release whose `management.html`
+  asset (sha256 `46aedbbc…2e63`) the proxy was serving before the switch.
+- `upstream` remote = router-for-me; merge its release tags into `main`.
 
 ## Build and deploy
 
@@ -38,10 +39,9 @@ To check what is being served:
 
 ```bash
 git fetch upstream --tags
-git checkout main && git merge --ff-only upstream/main && git push origin main
-git checkout custom && git rebase vX.Y.Z    # or: git merge vX.Y.Z; prefer release tags over main
+git checkout main && git merge vX.Y.Z      # prefer release tags over upstream/main
 bun run verify && scripts/deploy-local.sh
-git push --force-with-lease origin custom   # only needed after a rebase
+git push origin main
 ```
 
 ## Adding a provider quota tab
@@ -94,7 +94,7 @@ provider's `filterFn`, and each provider found becomes a tab.
 
 ### How the Cursor tab works
 
-- Contract: `/Users/szymon/private/CLIProxyAPI` branch `feat/cursor-usage`,
+- Contract: `/Users/szymon/private/CLIProxyAPI` branch `main`,
   `docs/cursor/USAGE-TRACKING.md` section 5. `GET /v8/management/quota/cursor` is the poller
   snapshot; `POST /v8/management/quota/cursor/refresh {auth_index}` polls Cursor now.
 - Cards: one per `type: "cursor"` credential from `/credentials` (every cursor auth file also
