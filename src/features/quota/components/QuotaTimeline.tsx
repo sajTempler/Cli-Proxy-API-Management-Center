@@ -330,6 +330,12 @@ function Lane({ lane, span, now, mode, cells, nowPercent, resolvedTheme }: LaneP
     [lane, span, now]
   );
 
+  // Lanes that carry `used` (Cursor) display usage like their card; the rest
+  // display what remains.
+  const showsUsed = lane.used !== undefined;
+  const usedText = (percent: number) =>
+    t('cursor_quota.used_percent', { percent, defaultValue: `${percent}% used` });
+
   const colorSet = TYPE_COLORS[lane.provider] || TYPE_COLORS.unknown;
   const color: ThemeColors =
     resolvedTheme === 'dark' && colorSet.dark ? colorSet.dark : colorSet.light;
@@ -358,7 +364,7 @@ function Lane({ lane, span, now, mode, cells, nowPercent, resolvedTheme }: LaneP
           {lane.limits.map((limit) => (
             <span key={limit.label} className={styles.laneLimit}>
               {lane.provider === 'meta' ? t(limit.label) : limit.label}{' '}
-              <b>{limit.remaining}%</b>
+              <b>{limit.used !== undefined ? usedText(limit.used) : `${limit.remaining}%`}</b>
             </span>
           ))}
         </div>
@@ -387,6 +393,20 @@ function Lane({ lane, span, now, mode, cells, nowPercent, resolvedTheme }: LaneP
           </span>
         ) : (
           windows.map((window) => {
+            // `remaining` is set only on the API-reported current window; a lane
+            // that displays usage (Cursor) shows the used share of that window.
+            const percentText =
+              window.remaining === null
+                ? null
+                : showsUsed
+                  ? usedText(lane.used ?? 100 - window.remaining)
+                  : `${window.remaining}%`;
+            const fillPercent =
+              window.remaining === null
+                ? null
+                : showsUsed
+                  ? (lane.used ?? 100 - window.remaining)
+                  : 100 - window.remaining;
             // A label needs room to read; below that the bar speaks for itself
             // and the detail lives in the tooltip.
             const showLabel = window.widthPercent > (mode === 'session' ? 4.5 : 9);
@@ -403,20 +423,21 @@ function Lane({ lane, span, now, mode, cells, nowPercent, resolvedTheme }: LaneP
                 title={`${lane.displayName}\n${formatDay(window.startMs)} ${formatTime(
                   window.startMs
                 )} → ${formatDay(window.endMs)} ${formatTime(window.endMs)}${
-                  window.remaining !== null ? `\n${window.remaining}% remaining` : ''
+                  percentText === null
+                    ? ''
+                    : showsUsed
+                      ? `\n${percentText}`
+                      : `\n${percentText} remaining`
                 }`}
               >
                 {/* Only the API-reported current window has meaningful usage;
                     projected windows intentionally have no fill. */}
-                {window.remaining !== null && (
-                  <span
-                    className={styles.windowFill}
-                    style={{ width: `${100 - window.remaining}%` }}
-                  />
+                {fillPercent !== null && (
+                  <span className={styles.windowFill} style={{ width: `${fillPercent}%` }} />
                 )}
                 {showLabel && (
                   <span className={styles.windowLabel}>
-                    {window.remaining !== null ? `${window.remaining}% · ` : ''}
+                    {percentText !== null ? `${percentText} · ` : ''}
                     {endText}
                   </span>
                 )}

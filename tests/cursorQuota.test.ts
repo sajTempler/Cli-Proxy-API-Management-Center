@@ -25,6 +25,7 @@ import { CursorQuotaBody } from '@/features/quota/providers/cursor/CursorQuotaBo
 import { QUOTA_CLASS_KEYS, bindQuotaClasses } from '@/features/quota/types';
 import { classifyQuotaFiles } from '@/features/quota/logic';
 import { buildTimelineLane } from '@/features/quota/quotaTimelineModel';
+import { QuotaTimeline } from '@/features/quota/components/QuotaTimeline';
 import { collectQuotaRowInstants } from '@/features/quota/resetSchedule';
 import type { AuthFileItem, CursorQuotaState } from '@/types';
 import fixture from './fixtures/cursor-quota.json';
@@ -307,7 +308,46 @@ describe('Cursor in the timeline and recovery ordering', () => {
     expect(lane.anchorMs).toBe(Date.parse(RESET));
     expect(lane.periodHours).toBe(720);
     expect(lane.remaining).toBe(77);
-    expect(lane.limits.map((limit) => limit.remaining)).toEqual([77, 92, 0]);
+    // The lane displays USED, like the card (23% / 8% / 100%), not remaining.
+    expect(lane.used).toBe(23);
+    expect(lane.limits.map((limit) => limit.used)).toEqual([23, 8, 100]);
+  });
+
+  test('the timeline labels the bar and pills with the used share', async () => {
+    await i18n.changeLanguage('en');
+    const html = renderToStaticMarkup(
+      createElement(QuotaTimeline, {
+        entries: [{ file: cursorFile(), type: 'cursor' }],
+        quotaFor: () => state,
+        displayNameFor: (name: string) => name,
+        resolvedTheme: 'light',
+        now: Date.parse('2026-10-21T09:00:00Z'),
+      })
+    );
+    expect(html).toMatch(/<b>23% used<\/b>/);
+    expect(html).toMatch(/<b>8% used<\/b>/);
+    expect(html).toMatch(/<b>100% used<\/b>/);
+    expect(html).toMatch(/<span style="width:23%"><\/span><span>23% used · /);
+    expect(html).toMatch(/23% used · \d\d\/\d\d \d\d:\d\d/);
+    expect(html).not.toMatch(/77% ·|<b>77%<\/b>/);
+    expect(html).not.toContain('remaining');
+  });
+
+  test('Claude lanes keep showing what remains', () => {
+    const lane = buildTimelineLane({
+      name: 'a',
+      displayName: 'a',
+      provider: 'claude',
+      quota: {
+        status: 'success',
+        windows: [
+          { label: '7-day', usedPercent: 25, resetAtMs: Date.parse(RESET), periodHours: 168 },
+        ],
+      },
+    });
+    expect(lane.remaining).toBe(75);
+    expect(lane.used).toBeUndefined();
+    expect(lane.limits).toEqual([{ label: '7-day', remaining: 75 }]);
   });
 
   test('every window reports the cycle end as a recovery instant', () => {

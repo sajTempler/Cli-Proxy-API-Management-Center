@@ -11,6 +11,7 @@
  */
 
 import { DAY_MS, HOUR_MS } from '@/utils/time/durations';
+import { formatCursorPercent } from './providers/cursor/data';
 import type { QuotaProviderType } from './providers/types';
 
 export { DAY_MS, HOUR_MS };
@@ -31,6 +32,11 @@ export interface TimelineLimit {
   label: string;
   /** Remaining percent, 0..100. */
   remaining: number;
+  /**
+   * Used percent, 0..100, set only on lanes that display usage (Cursor, whose
+   * card shows the share used). Lanes without it display `remaining`.
+   */
+  used?: number;
 }
 
 /** A manual quota-reset credit attached to a Codex credential. */
@@ -56,6 +62,11 @@ export interface TimelineLane {
   periodHours: number | null;
   /** Remaining percent reported for the window ending at `anchorMs`. */
   remaining: number | null;
+  /**
+   * Used percent for the window ending at `anchorMs`. Present (possibly null)
+   * only on lanes that display usage instead of remaining — see `TimelineLimit.used`.
+   */
+  used?: number | null;
   limits: TimelineLimit[];
   resetCredits: TimelineResetCredit[];
 }
@@ -403,17 +414,26 @@ export function buildTimelineLane(input: TimelineLaneInput): TimelineLane {
             .filter((credit): credit is TimelineResetCredit => credit !== null)
         : [];
 
+    // Cursor's card shows the share USED, so its lane does too, with the card's
+    // own rounding; Claude and Codex lanes show what remains.
+    const showsUsed = provider === 'cursor';
+
     return {
       ...empty,
       anchorMs: chosen.resetAtMs ?? null,
       periodHours: chosen.periodHours ?? null,
       // Claude, Codex and Cursor store percent USED. Cursor's are unrounded floats.
       remaining: typeof chosen.usedPercent === 'number' ? remainingOf(chosen.usedPercent) : null,
+      ...(showsUsed && {
+        used:
+          typeof chosen.usedPercent === 'number' ? formatCursorPercent(chosen.usedPercent) : null,
+      }),
       limits: windows
         .filter((window) => typeof window.usedPercent === 'number')
         .map((window) => ({
           label: window.label ?? '',
           remaining: remainingOf(window.usedPercent as number),
+          ...(showsUsed && { used: formatCursorPercent(window.usedPercent as number) }),
         })),
       resetCredits,
     };

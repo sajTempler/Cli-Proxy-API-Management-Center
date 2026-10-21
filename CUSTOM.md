@@ -106,4 +106,5 @@ provider's `filterFn`, and each provider found becomes a tab.
   with the share USED, as Cursor shows them). Display rules (percent rounding, `$` decimals,
   `Resets MMM d` in UTC) live in `data.ts` and are tested in `tests/cursorQuota.test.ts`.
 - Timeline: `windows[]` (Included, Auto, API) carry `resetAtMs` and `periodHours` = billing cycle
-  length, so the lane is the monthly cycle bar.
+  length, so the lane is the monthly cycle bar. Like the card, the lane shows percent USED
+  (`lane.used`, `limit.used`, labelled `cursor_quota.used_percent`); other providers show remaining.
